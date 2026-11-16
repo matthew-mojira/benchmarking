@@ -1,5 +1,10 @@
 FROM gcc:16-trixie AS base
 
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends python3-venv
+RUN python3 -m venv /opt/pyperformance \
+ && /opt/pyperformance/bin/pip install pyperformance==1.14.0
+
 WORKDIR /build
 
 COPY build/cpython.sh build/
@@ -33,9 +38,7 @@ RUN bash build/cpython.sh 3.13.18 opt
 
 FROM base AS cpython-3.13.18-jit
 # Install LLVM
-RUN apt-get update \
- && apt-get install -y --no-install-recommends clang-18 llvm-18 \
- && rm -rf /var/lib/apt/lists/*
+RUN apt-get install -y --no-install-recommends clang-18 llvm-18
 RUN bash build/cpython.sh 3.13.18 jit
 
 FROM base AS cpython-3.14.10-default
@@ -46,9 +49,7 @@ RUN bash build/cpython.sh 3.14.10 opt
 
 FROM base AS cpython-3.14.10-jit
 # Install LLVM
-RUN apt-get update \
- && apt-get install -y --no-install-recommends clang-19 llvm-19 \
- && rm -rf /var/lib/apt/lists/*
+RUN apt-get install -y --no-install-recommends clang-19 llvm-19
 RUN bash build/cpython.sh 3.14.10 jit
 
 FROM base AS cpython-3.15.2-default
@@ -63,6 +64,5 @@ RUN mkdir -p /etc/apt/keyrings \
  && curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key -o /etc/apt/keyrings/llvm.asc \
  && echo "deb [signed-by=/etc/apt/keyrings/llvm.asc] https://apt.llvm.org/trixie/ llvm-toolchain-trixie-21 main" > /etc/apt/sources.list.d/llvm.list \
  && apt-get update \
- && apt-get install -y --no-install-recommends clang-21 llvm-21 \
- && rm -rf /var/lib/apt/lists/*
+ && apt-get install -y --no-install-recommends clang-21 llvm-21
 RUN bash build/cpython.sh 3.15.2 jit

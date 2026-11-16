@@ -1,0 +1,6 @@
+[submodule "benchmarks/pyperformance"]
+	path = benchmarks/pyperformance
+	url = https://github.com/python/pyperformance.git
+[submodule "engines/cpython"]
+	path = engines/cpython
+	url = https://github.com/python/cpython.git
